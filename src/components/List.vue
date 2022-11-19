@@ -94,8 +94,9 @@ export default defineComponent({
   },
   async created() {
     if (this.$route.params.page) {
-      this.$router.replace("/list");
       this.page = Number(this.$route.params.page);
+    } else {
+      this.$router.replace({ name: "List", params: { page: 1 } });
     }
     this.articleCount = await getArticleCount();
     this.pages = await getPages(this.articlesPerPage);
@@ -116,6 +117,7 @@ export default defineComponent({
       this.pages = await getPages(n);
     },
     async page(newPage: number) {
+      this.$router.replace({ name: "List", params: { page: newPage } });
       this.articles = await getArticles(newPage, this.articlesPerPage);
     },
   },
