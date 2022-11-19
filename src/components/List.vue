@@ -61,7 +61,7 @@
     </tbody>
   </v-table>
 
-  <v-pagination class="pagination" size="small" :total-visible="8" v-model="page" :length="pages"> </v-pagination>
+  <v-pagination class="pagination" size="small" v-model="page" :length="pages"> </v-pagination>
 </template>
 
 <script lang="ts">
