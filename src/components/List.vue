@@ -14,6 +14,7 @@
     </v-col>
   </v-row>
 
+  <!-- PC 레이아웃 -->
   <v-table class="mb-3 border" v-if="!mobile">
     <thead>
       <tr>
@@ -36,7 +37,9 @@
       </tr>
     </tbody>
   </v-table>
-  <v-table v-else>
+
+  <!-- 모바일 레이아웃 -->
+  <v-table class="pt-1 my-1" v-else>
     <tbody>
       <tr v-for="article of articles">
         <td class="text-left">
@@ -57,6 +60,7 @@
       </tr>
     </tbody>
   </v-table>
+
   <v-pagination class="pagination" size="small" :total-visible="8" v-model="page" :length="pages"> </v-pagination>
 </template>
 
