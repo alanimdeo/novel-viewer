@@ -1,7 +1,7 @@
 <template>
   <v-row class="ma-2 mb-0">
-    <v-col class="d-flex align-end">
-      <h2>총 글 개수: {{ articleCount }}</h2>
+    <v-col class="d-flex align-center">
+      <p :class="`text-h${mobile ? '5' : '4'}`">총 글 개수: {{ articleCount }}</p>
     </v-col>
     <v-col class="articles-per-page">
       <v-select
@@ -14,7 +14,7 @@
     </v-col>
   </v-row>
 
-  <v-table class="mb-3 border">
+  <v-table class="mb-3 border" v-if="!mobile">
     <thead>
       <tr>
         <th class="text-left" width="100px">ID</th>
@@ -24,28 +24,45 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="article of articles" :key="article.id" @click="">
+      <tr v-for="article of articles">
         <td class="text-left">{{ article.id }}</td>
         <td class="text-left">
-          <router-link class="article-link" :to="'/route/' + article.id">{{ article.title }}</router-link>
+          <router-link class="article-link article-link-pc" :to="'/route/' + article.id">{{
+            article.title
+          }}</router-link>
         </td>
         <td class="text-left">{{ article.author }}</td>
         <td class="text-left">{{ getPrettierDate(article.created_date) }}</td>
       </tr>
     </tbody>
   </v-table>
-  <v-pagination class="pagination" v-model="page" :length="pages"> </v-pagination>
-  <!-- <div class="">
-    <button :disabled="page === 1" @click="page -= 1">◀</button>
-    <select name="페이지" v-model="page">
-      <option v-for="n in pages" :value="n">{{ n }}페이지</option>
-    </select>
-    <button :disabled="page === pages" @click="page += 1">▶</button>
-  </div> -->
+  <v-table v-else>
+    <tbody>
+      <tr v-for="article of articles">
+        <td class="text-left">
+          <router-link class="article-link" :to="'/route/' + article.id">
+            {{ article.title }}
+            <div class="d-flex justify-space-between">
+              <span class="text-caption">
+                <v-icon class="text-caption" icon="mdi-account"></v-icon>
+                {{ article.author }}
+              </span>
+              <span class="text-caption">
+                <v-icon class="text-caption" icon="mdi-clock-outline"></v-icon>
+                {{ getPrettierDate(article.created_date) }}
+              </span>
+            </div>
+          </router-link>
+        </td>
+      </tr>
+    </tbody>
+  </v-table>
+  <v-pagination class="pagination" size="small" :total-visible="8" v-model="page" :length="pages"> </v-pagination>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useDisplay } from "vuetify";
 import { Article, getArticleCount, getArticles, getPages, getPrettierDate } from "../modules/article";
 
 export default defineComponent({
@@ -65,6 +82,11 @@ export default defineComponent({
       pages: 0,
       page: 1,
     };
+  },
+  setup() {
+    const { xs } = useDisplay();
+
+    return { mobile: xs };
   },
   async created() {
     if (this.$route.params.page) {
@@ -110,7 +132,7 @@ export default defineComponent({
   color: unset;
   text-decoration-line: none;
 }
-.article-link:hover {
+.article-link-pc:hover {
   text-decoration-line: underline;
 }
 .article-link:visited {
