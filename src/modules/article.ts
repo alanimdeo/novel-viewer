@@ -1,4 +1,4 @@
-const API = "https://api.alan.imdeo.kr/oregairu";
+const API = "https://api.alan.imdeo.kr/novel";
 
 export interface Article {
   id: number;

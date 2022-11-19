@@ -6,11 +6,12 @@ export default defineConfig({
   server: {
     proxy: {
       "/novel": {
-        target: "https://pages.alan.imdeo.kr/oregairu/novel",
+        target: "https://novel.alan.imdeo.kr/novel",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/novel/, ""),
       },
     },
   },
   plugins: [vue()],
+  base: "./",
 });
