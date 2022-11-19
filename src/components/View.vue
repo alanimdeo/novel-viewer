@@ -18,6 +18,10 @@
   <div class="content">
     <p v-for="line of content">{{ line || "&nbsp;" }}</p>
   </div>
+  <div>
+    <button :disabled="!data.prev" @click="$router.push(`/route/${data.prev}`)">◀ 이전 화</button>
+    <button :disabled="!data.next" @click="$router.push(`/route/${data.next}`)">다음 화 ▶</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -35,6 +39,9 @@ export default defineComponent({
         created_date: "",
         url: "",
         related_links: [],
+        prev: null,
+        next: null,
+        series: null,
       } as Article,
       content: [] as string[],
     };

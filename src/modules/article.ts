@@ -7,6 +7,9 @@ export interface Article {
   created_date: string;
   url: string;
   related_links: string[];
+  prev: number | null;
+  next: number | null;
+  series: number | null;
 }
 
 export async function getArticleCount(): Promise<number> {

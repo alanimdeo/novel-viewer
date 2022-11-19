@@ -16,9 +16,24 @@ const routes: Array<RouteRecordRaw> = [
     name: "View",
     component: () => import("./components/View.vue"),
   },
+  {
+    path: "/route/:id",
+    name: "Route",
+    component: () => import("./components/Route.vue"),
+  },
 ];
 
-export const router = createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.name === "View" && from.name === "View") {
+    next({ name: "Route", params: { id: to.params.id }, replace: true });
+  } else {
+    next();
+  }
+});
+
+export { router };
