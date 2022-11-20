@@ -5,7 +5,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Route",
   created() {
-    this.$router.replace(`/view/${this.$route.params.id}`);
+    this.$router.replace(`/view/${this.$route.params.table}/${this.$route.params.id}`);
   },
 });
 </script>

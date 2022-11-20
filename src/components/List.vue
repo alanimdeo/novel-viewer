@@ -14,6 +14,9 @@
     </v-col>
   </v-row>
 
+  <v-tabs v-model="table">
+    <v-tab v-for="table of tables" :value="table">{{ table }}</v-tab>
+  </v-tabs>
   <!-- PC 레이아웃 -->
   <v-table class="mb-3 border" v-if="!mobile">
     <thead>
@@ -28,7 +31,7 @@
       <tr v-for="article of articles">
         <td class="text-left">{{ article.id }}</td>
         <td class="text-left">
-          <router-link class="article-link article-link-pc" :to="'/route/' + article.id">{{
+          <router-link class="article-link article-link-pc" :to="`/route/${table}/${article.id}`">{{
             article.title
           }}</router-link>
         </td>
@@ -43,7 +46,7 @@
     <tbody>
       <tr v-for="article of articles">
         <td class="text-left">
-          <router-link class="article-link" :to="'/route/' + article.id">
+          <router-link class="article-link" :to="`/route/${table}/${article.id}`">
             {{ article.title }}
             <div class="d-flex justify-space-between">
               <span class="text-caption">
@@ -67,7 +70,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useDisplay } from "vuetify";
-import { Article, getArticleCount, getArticles, getPages, getPrettierDate } from "../modules/article";
+import { Article, getArticleCount, getArticles, getPages, getPrettierDate, getTables } from "../modules/article";
 
 export default defineComponent({
   name: "List",
@@ -83,6 +86,8 @@ export default defineComponent({
       articleCount: 0,
       articles: [] as Article[],
       articlesPerPage: Number(localStorage.getItem("articlesPerPage")) || 15,
+      tables: [] as string[],
+      table: "oregairu",
       pages: 0,
       page: 1,
     };
@@ -93,14 +98,18 @@ export default defineComponent({
     return { mobile: xs };
   },
   async created() {
+    if (this.$route.params.table) {
+      this.table = String(this.$route.params.table);
+    }
     if (this.$route.params.page) {
       this.page = Number(this.$route.params.page);
     } else {
-      this.$router.replace({ name: "List", params: { page: 1 } });
+      this.$router.replace({ name: "List", params: { table: this.table, page: 1 } });
     }
-    this.articleCount = await getArticleCount();
-    this.pages = await getPages(this.articlesPerPage);
-    this.articles = await getArticles(this.page, this.articlesPerPage);
+    this.tables = await getTables();
+    this.articleCount = await getArticleCount(this.table);
+    this.pages = await getPages(this.table, this.articlesPerPage);
+    this.articles = await getArticles(this.table, this.page, this.articlesPerPage);
   },
 
   methods: {
@@ -110,15 +119,23 @@ export default defineComponent({
   watch: {
     async articlesPerPage(n: number) {
       localStorage.setItem("articlesPerPage", String(n));
-      if (this.page == 1) {
-        this.articles = await getArticles(1, n);
+      if (this.page === 1) {
+        this.articles = await getArticles(this.table, 1, n);
       }
       this.page = 1;
-      this.pages = await getPages(n);
+      this.pages = await getPages(this.table, n);
     },
     async page(newPage: number) {
-      this.$router.replace({ name: "List", params: { page: newPage } });
-      this.articles = await getArticles(newPage, this.articlesPerPage);
+      this.$router.replace({ name: "List", params: { table: this.table, page: newPage } });
+      this.articles = await getArticles(this.table, newPage, this.articlesPerPage);
+    },
+    async table(newTable: string) {
+      console.log(newTable);
+      this.$router.replace({ name: "List", params: { table: newTable, page: 1 } });
+      if (this.page === 1) {
+        this.articles = await getArticles(newTable, 1, this.articlesPerPage);
+      }
+      this.page = 1;
     },
   },
 });

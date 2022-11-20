@@ -8,7 +8,7 @@
       <!-- <v-btn icon="mdi-cog" v-if="$route.name == 'View'" @click="settings = !settings" /> -->
     </v-app-bar>
 
-    <v-main class="px-md-3 pb-4">
+    <v-main class="px-md-3 main">
       <Suspense>
         <router-view #default />
         <template #fallback>로딩 중...</template>
@@ -41,3 +41,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.main {
+  padding-bottom: 64px;
+}
+</style>

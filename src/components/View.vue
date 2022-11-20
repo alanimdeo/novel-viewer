@@ -27,7 +27,7 @@
       color="info"
       prepend-icon="mdi-chevron-left"
       :disabled="!data.prev"
-      @click="$router.push(`/route/${data.prev}`)"
+      @click="$router.push(`/route/${$route.params.table}/${data.prev}`)"
     >
       이전 화
     </v-btn>
@@ -35,7 +35,7 @@
       color="info"
       append-icon="mdi-chevron-right"
       :disabled="!data.next"
-      @click="$router.push(`/route/${data.next}`)"
+      @click="$router.push(`/route/${$route.params.table}/${data.next}`)"
     >
       다음 화
     </v-btn>
@@ -52,9 +52,9 @@ export default defineComponent({
   async setup() {
     const route = useRoute();
 
-    const data = await getArticleInfo(Number(route.params.id));
+    const data = await getArticleInfo(String(route.params.table), Number(route.params.id));
     data.created_date = getPrettierDate(data.created_date);
-    const content = (await (await fetch(`/novel/${data.id}.txt`)).text()).split("\n");
+    const content = (await (await fetch(`/novel/${route.params.table}/${data.id}.txt`)).text()).split("\n");
 
     return { data, content };
   },

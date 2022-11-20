@@ -7,20 +7,25 @@ export interface Article {
   created_date: string;
   url: string;
   related_links: string[];
+  category: number | null;
   prev: number | null;
   next: number | null;
-  series: number | null;
 }
 
-export async function getArticleCount(): Promise<number> {
-  const response = await fetch(`${API}/pages?count=1`);
+export async function getTables(): Promise<string[]> {
+  const res = await fetch(`${API}/tables`);
+  return await res.json();
+}
+
+export async function getArticleCount(table: string): Promise<number> {
+  const response = await fetch(`${API}/pages/${table}?&count=1`);
   const count = await response.json();
   return count;
 }
 
-export async function getPages(articlePerPage?: number): Promise<number> {
+export async function getPages(table: string, articlePerPage?: number): Promise<number> {
   try {
-    let url = `${API}/pages`;
+    let url = `${API}/pages/${table}`;
     if (articlePerPage) {
       url += `?count=${articlePerPage}`;
     }
@@ -32,9 +37,9 @@ export async function getPages(articlePerPage?: number): Promise<number> {
   }
 }
 
-export async function getArticles(page: number, articlePerPage?: number): Promise<Article[]> {
+export async function getArticles(table: string, page: number, articlePerPage?: number): Promise<Article[]> {
   try {
-    let url = `${API}/list/${page}`;
+    let url = `${API}/list/${table}/${page}`;
     if (articlePerPage) {
       url += `?count=${articlePerPage}`;
     }
@@ -46,9 +51,9 @@ export async function getArticles(page: number, articlePerPage?: number): Promis
   }
 }
 
-export async function getArticleInfo(id: number): Promise<Article> {
+export async function getArticleInfo(table: string, id: number): Promise<Article> {
   try {
-    const response = await fetch(`${API}/info/${id}`);
+    const response = await fetch(`${API}/info/${table}/${id}`);
     const article: Article = await response.json();
     return article;
   } catch (err) {

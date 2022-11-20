@@ -13,17 +13,17 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("./components/Home.vue"),
   },
   {
-    path: "/list/:page?",
+    path: "/list/:table?/:page?",
     name: "List",
     component: () => import("./components/List.vue"),
   },
   {
-    path: "/view/:id",
+    path: "/view/:table/:id",
     name: "View",
     component: () => import("./components/View.vue"),
   },
   {
-    path: "/route/:id",
+    path: "/route/:table/:id",
     name: "Route",
     component: () => import("./components/Route.vue"),
   },
@@ -36,7 +36,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.name === "View" && from.name === "View") {
-    next({ name: "Route", params: { id: to.params.id }, replace: true });
+    next({ name: "Route", params: { table: to.params.table, id: to.params.id }, replace: true });
   } else {
     next();
   }
