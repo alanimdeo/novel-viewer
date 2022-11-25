@@ -135,6 +135,7 @@ export default defineComponent({
       if (this.page === 1) {
         this.articles = await getArticles(newTable, 1, this.articlesPerPage);
       }
+      this.articleCount = await getArticleCount(this.table);
       this.page = 1;
       this.pages = await getPages(this.table, this.articlesPerPage);
     },
