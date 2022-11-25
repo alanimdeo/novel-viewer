@@ -136,6 +136,7 @@ export default defineComponent({
         this.articles = await getArticles(newTable, 1, this.articlesPerPage);
       }
       this.page = 1;
+      this.pages = await getPages(this.table, this.articlesPerPage);
     },
   },
 });
