@@ -15,7 +15,7 @@
   </v-row>
 
   <v-tabs v-model="table">
-    <v-tab v-for="table of tables" :value="table">{{ table }}</v-tab>
+    <v-tab v-for="table of tables" :value="table.name">{{ table.name }}</v-tab>
   </v-tabs>
   <!-- PC 레이아웃 -->
   <v-table class="mb-3 border" v-if="!mobile">
@@ -70,7 +70,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useDisplay } from "vuetify";
-import { Article, getArticleCount, getArticles, getPages, getPrettierDate, getTables } from "../modules/article";
+import { Article, getArticleCount, getArticles, getPages, getPrettierDate, getTables, Table } from "../modules/article";
 
 export default defineComponent({
   name: "List",
@@ -86,7 +86,7 @@ export default defineComponent({
       articleCount: 0,
       articles: [] as Article[],
       articlesPerPage: Number(localStorage.getItem("articlesPerPage")) || 15,
-      tables: [] as string[],
+      tables: [] as Table[],
       table: "oregairu",
       pages: 0,
       page: 1,
@@ -130,7 +130,6 @@ export default defineComponent({
       this.articles = await getArticles(this.table, newPage, this.articlesPerPage);
     },
     async table(newTable: string) {
-      console.log(newTable);
       this.$router.replace({ name: "List", params: { table: newTable, page: 1 } });
       if (this.page === 1) {
         this.articles = await getArticles(newTable, 1, this.articlesPerPage);

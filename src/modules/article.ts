@@ -12,7 +12,14 @@ export interface Article {
   next: number | null;
 }
 
-export async function getTables(): Promise<string[]> {
+export interface Table {
+  name: string;
+  info: {
+    site: string;
+  };
+}
+
+export async function getTables(): Promise<Table[]> {
   const res = await fetch(`${API}/tables`);
   return await res.json();
 }
@@ -68,4 +75,17 @@ export function getPrettierDate(date: string): string {
     " " +
     `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
   );
+}
+
+export async function fetchNaverBlogArticle(blogId: string, logNo: string) {
+  const tables: string[] = (await (await fetch(`${API}/tables`)).json()).map((table: Table) => table.name);
+  if (!tables.includes(blogId)) {
+    throw new Error("Invalid blogId");
+  }
+  const article = await fetch(`${API}/info/${blogId}/${logNo}`);
+  if (article.status === 200) {
+    throw new Error("이미 글이 존재합니다.");
+  }
+  const res = await fetch(`${API}/add/naver/${blogId}/${logNo}`);
+  return await res.json();
 }
