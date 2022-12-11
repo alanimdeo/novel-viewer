@@ -20,13 +20,32 @@
             :text="(addArticleDialog.error as Error).message"
             class="mb-2"
           ></v-alert>
-          <v-select
-            :items="addArticleDialog.tables"
-            label="테이블"
-            v-model="addArticleDialog.table"
-            class="mb-4"
-          ></v-select>
-          <v-text-field v-model="addArticleDialog.logNo" label="글 ID" />
+          <form @submit.prevent="fetchNaver()">
+            <v-text-field
+              v-model="addArticleDialog.userId"
+              autocomplete="username"
+              label="ID"
+              class="mb-4"
+              :disabled="addArticleDialog.processing"
+            />
+            <v-text-field
+              v-model="addArticleDialog.userPw"
+              type="password"
+              autocomplete="current-password"
+              label="비밀번호"
+              class="mb-4"
+              :disabled="addArticleDialog.processing"
+            />
+
+            <v-select
+              :items="addArticleDialog.tables"
+              label="테이블"
+              v-model="addArticleDialog.table"
+              class="mb-4"
+              :disabled="addArticleDialog.processing"
+            ></v-select>
+            <v-text-field v-model="addArticleDialog.logNo" label="글 ID" :disabled="addArticleDialog.processing" />
+          </form>
         </v-card-text>
         <v-card-actions>
           <v-btn :disabled="addArticleDialog.processing" color="info" @click="fetchNaver()">
@@ -62,6 +81,8 @@ export default defineComponent({
         table: "",
         error: null as Error | null,
         logNo: "",
+        userId: "",
+        userPw: "",
       },
     };
   },
@@ -85,17 +106,18 @@ export default defineComponent({
   methods: {
     async fetchNaver() {
       this.addArticleDialog.processing = true;
+      this.addArticleDialog.error = null;
       try {
-        await fetchNaverBlogArticle(this.addArticleDialog.table, this.addArticleDialog.logNo);
+        await fetchNaverBlogArticle(
+          this.addArticleDialog.table,
+          this.addArticleDialog.logNo,
+          this.addArticleDialog.userId,
+          this.addArticleDialog.userPw
+        );
       } catch (err) {
         this.addArticleDialog.error = err as Error;
       }
       this.addArticleDialog.processing = false;
-    },
-    detectEnter(event: KeyboardEvent) {
-      if (event.key === "Enter") {
-        this.fetchNaver();
-      }
     },
   },
 });
