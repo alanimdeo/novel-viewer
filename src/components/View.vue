@@ -11,6 +11,7 @@
         <p>글쓴이: {{ data.author }}</p>
         <v-divider class="mx-2" vertical></v-divider>
         <p>작성일: {{ data.created_date }}</p>
+        <!-- TODO: 날짜가 0000-00-00으로 되어 있는 글 처리 -->
       </div>
       <div v-if="data.related_links.length !== 0">
         <v-divider class="my-3"></v-divider>

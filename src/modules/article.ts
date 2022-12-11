@@ -77,7 +77,7 @@ export function getPrettierDate(date: string): string {
   );
 }
 
-export async function fetchNaverBlogArticle(blogId: string, logNo: string) {
+export async function fetchNaverBlogArticle(blogId: string, logNo: string, id: string, pw: string) {
   const tables: string[] = (await (await fetch(`${API}/tables`)).json()).map((table: Table) => table.name);
   if (!tables.includes(blogId)) {
     throw new Error("Invalid blogId");
@@ -86,6 +86,16 @@ export async function fetchNaverBlogArticle(blogId: string, logNo: string) {
   if (article.status === 200) {
     throw new Error("이미 글이 존재합니다.");
   }
-  const res = await fetch(`${API}/add/naver/${blogId}/${logNo}`);
+  const res = await fetch(`${API}/add/naver/${blogId}/${logNo}`, {
+    headers: new Headers({
+      Authorization: `Basic ${btoa(`${id}:${pw}`)}`,
+    }),
+  });
+  if (res.status === 401) {
+    throw new Error("로그인에 실패했습니다.");
+  }
+  if (res.status !== 200) {
+    throw new Error("글을 가져오는 데 실패했습니다.");
+  }
   return await res.json();
 }
